@@ -55,7 +55,7 @@ public class SauceDemoTest {
 		WebDriverUtility wdUtil = new WebDriverUtility(driver);
 
 		WebElement logout = driver.findElement(By.id("logout_sidebar_link"));
-		wdUtil.waitAndClick(logout, 10);
+		wdUtil.waitAndClick(logout);
 
 		Thread.sleep(3000);
 		driver.quit();

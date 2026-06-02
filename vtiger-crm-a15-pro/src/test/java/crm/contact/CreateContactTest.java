@@ -17,12 +17,15 @@ import org.json.simple.parser.ParseException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.safari.SafariDriver;
 
 import generic_utility.FileUtility;
+import object_repository.HomePage;
+import object_repository.LoginPage;
 
 /**
  * Test Case: Create Contact in CRM Application
@@ -48,11 +51,10 @@ public class CreateContactTest {
 		String URL = fUtil.getDataFromJsonFile("url");
 		String USERNAME = fUtil.getDataFromJsonFile("un");
 		String PASSWORD = fUtil.getDataFromJsonFile("pwd");
-		
-		
+
 //		get data from excel
 		String expectedLastName = fUtil.getDataFromExcelFile("contact", 1, 0);
-		
+
 		// ==============================
 		// Browser Setup
 		// ==============================
@@ -86,9 +88,14 @@ public class CreateContactTest {
 		// Login to CRM Application
 		// ==============================
 
-		driver.findElement(By.name("user_name")).sendKeys(USERNAME);
+//		WebElement username = driver.findElement(By.name("user_name"));
+//		username.sendKeys(USERNAME);
+//
+//		WebElement password = driver.findElement(By.name("user_password"));
+//		password.sendKeys(PASSWORD + Keys.ENTER);
 
-		driver.findElement(By.name("user_password")).sendKeys(PASSWORD + Keys.ENTER);
+		LoginPage lp = new LoginPage(driver);
+		lp.login(USERNAME, PASSWORD);
 
 		System.out.println("Login successful");
 
@@ -96,10 +103,13 @@ public class CreateContactTest {
 		// Navigate to Contacts Module
 		// ==============================
 
-		driver.findElement(By.linkText("Contacts")).click();
+		HomePage hp = new HomePage(driver);
+
+//		driver.findElement(By.linkText("Contacts")).click();
+		hp.getConLink().click();
 
 		// Click on Create Contact Icon
-		driver.findElement(By.cssSelector("img[title='Create Contact...']")).click();
+//		driver.findElement(By.cssSelector("img[title='Create Contact...']")).click();
 
 		// ==============================
 		// Create New Contact

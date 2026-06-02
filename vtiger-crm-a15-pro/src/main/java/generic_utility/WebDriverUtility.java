@@ -9,6 +9,9 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Function;
 
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
@@ -77,8 +80,8 @@ public class WebDriverUtility {
 	 * @param element        WebElement to wait for
 	 * @param timeOutSeconds Max wait time in seconds
 	 */
-	public void waitForElementVisible(WebElement element, int timeOutSeconds) {
-		new WebDriverWait(driver, Duration.ofSeconds(timeOutSeconds)).until(ExpectedConditions.visibilityOf(element));
+	public void waitForElementVisible(WebElement element) {
+		wait.until(ExpectedConditions.visibilityOf(element));
 	}
 
 	/**
@@ -87,9 +90,12 @@ public class WebDriverUtility {
 	 * @param element        WebElement to wait for
 	 * @param timeOutSeconds Max wait time in seconds
 	 */
-	public void waitForElementClickable(WebElement element, int timeOutSeconds) {
-		new WebDriverWait(driver, Duration.ofSeconds(timeOutSeconds))
-				.until(ExpectedConditions.elementToBeClickable(element));
+	public void waitForElementClickable(WebElement element) {
+		wait.until(ExpectedConditions.elementToBeClickable(element));
+	}
+
+	public void waitAndClick(WebElement element) {
+		wait.until(ExpectedConditions.elementToBeClickable(element)).click();
 	}
 
 	/**
@@ -98,8 +104,8 @@ public class WebDriverUtility {
 	 * @param element        WebElement to wait for invisibility
 	 * @param timeOutSeconds Max wait time in seconds
 	 */
-	public void waitForElementInvisibility(WebElement element, int timeOutSeconds) {
-		new WebDriverWait(driver, Duration.ofSeconds(timeOutSeconds)).until(ExpectedConditions.invisibilityOf(element));
+	public void waitForElementInvisibility(WebElement element) {
+		wait.until(ExpectedConditions.invisibilityOf(element));
 	}
 
 	/**
@@ -109,27 +115,8 @@ public class WebDriverUtility {
 	 * @param text           Expected text
 	 * @param timeOutSeconds Max wait time in seconds
 	 */
-	public void waitForTextInElement(WebElement element, String text, int timeOutSeconds) {
-		new WebDriverWait(driver, Duration.ofSeconds(timeOutSeconds))
-				.until(ExpectedConditions.textToBePresentInElement(element, text));
-	}
-
-	/**
-	 * Fluent wait example: Waits for an element to be present, polling every 500ms.
-	 * 
-	 * @param locator        By locator of the element
-	 * @param timeoutSeconds Max wait time in seconds
-	 * @return WebElement once present
-	 */
-	public WebElement fluentWaitForElement(final By locator, int timeoutSeconds) {
-		Wait<WebDriver> fluentWait = new FluentWait<>(driver).withTimeout(Duration.ofSeconds(timeoutSeconds))
-				.pollingEvery(Duration.ofMillis(500)).ignoring(NoSuchElementException.class);
-
-		return fluentWait.until(new Function<WebDriver, WebElement>() {
-			public WebElement apply(WebDriver driver) {
-				return driver.findElement(locator);
-			}
-		});
+	public void waitForTextInElement(WebElement element, String text) {
+		wait.until(ExpectedConditions.textToBePresentInElement(element, text));
 	}
 
 	/**
@@ -138,9 +125,8 @@ public class WebDriverUtility {
 	 * @param titlePart      Partial or full title text
 	 * @param timeOutSeconds Max wait time in seconds
 	 */
-	public void waitForTitleContains(String titlePart, int timeOutSeconds) {
-		new WebDriverWait(driver, Duration.ofSeconds(timeOutSeconds))
-				.until(ExpectedConditions.titleContains(titlePart));
+	public void waitForTitleContains(String titlePart) {
+		wait.until(ExpectedConditions.titleContains(titlePart));
 	}
 
 	/**
@@ -150,8 +136,7 @@ public class WebDriverUtility {
 	 * @param timeOutSeconds Max wait time in seconds
 	 */
 	public void waitForUrlContains(String urlFraction, int timeOutSeconds) {
-		new WebDriverWait(driver, Duration.ofSeconds(timeOutSeconds))
-				.until(ExpectedConditions.urlContains(urlFraction));
+		wait.until(ExpectedConditions.urlContains(urlFraction));
 	}
 
 	// ===== Dropdown Select Methods =====
@@ -279,16 +264,7 @@ public class WebDriverUtility {
 		element.clear();
 	}
 
-	/**
-	 * Waits for an element to be clickable and clicks it.
-	 * 
-	 * @param element        WebElement to click
-	 * @param timeoutSeconds Max wait time before clicking
-	 */
-	public void waitAndClick(WebElement element, int timeoutSeconds) {
-		waitForElementClickable(element, timeoutSeconds);
-		element.click();
-	}
+
 
 	/**
 	 * Sends keys to an element after clearing existing text.
@@ -560,8 +536,8 @@ public class WebDriverUtility {
 	 */
 	public void switchToWindowByTitle(String partialWindowTitle) {
 		Set<String> windowHandles = driver.getWindowHandles();
-		for (String handle : windowHandles) {
-			driver.switchTo().window(handle);
+		for (String i : windowHandles) {
+			driver.switchTo().window(i);
 			if (driver.getTitle().contains(partialWindowTitle)) {
 				break;
 			}
